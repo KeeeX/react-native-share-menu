@@ -14,7 +14,7 @@ import UIKit
 import Social
 import RNShareMenu
 
-class ShareViewController: SLComposeServiceViewController {
+class ShareViewController: UIViewController {
   var hostAppId: String?
   var hostAppUrlScheme: String?
   var sharedItems: [Any] = []
@@ -33,27 +33,14 @@ class ShareViewController: SLComposeServiceViewController {
     } else {
       print("Error: \(NO_INFO_PLIST_URL_SCHEME_ERROR)")
     }
+
+    guard let items = extensionContext?.inputItems as? [NSExtensionItem] else {
+      cancelRequest()
+      return
+    }
+
+    handlePost(items)
   }
-
-    override func isContentValid() -> Bool {
-        // Do validation of contentText and/or NSExtensionContext attachments here
-        return true
-    }
-
-    override func didSelectPost() {
-        // This is called after the user selects Post. Do the upload of contentText and/or NSExtensionContext attachments.
-      guard let items = extensionContext?.inputItems as? [NSExtensionItem] else {
-        cancelRequest()
-        return
-      }
-
-      handlePost(items)
-    }
-
-    override func configurationItems() -> [Any]! {
-        // To add configuration options via table cells at the bottom of the sheet, return an array of SLComposeSheetConfigurationItem here.
-        return []
-    }
 
   func handlePost(_ items: [NSExtensionItem], extraData: [String:Any]? = nil) {
     DispatchQueue.global().async {
@@ -216,6 +203,12 @@ class ShareViewController: SLComposeServiceViewController {
     cancelRequest()
   }
   
+  override func viewDidAppear(_ animated: Bool) {
+    super.viewDidAppear(animated)
+    
+    completeRequest()
+  }
+
   internal func openHostApp() {
     guard let urlScheme = self.hostAppUrlScheme else {
       exit(withError: NO_INFO_PLIST_URL_SCHEME_ERROR)
