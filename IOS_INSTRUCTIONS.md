@@ -57,7 +57,7 @@ end
 +target '<SHARE_EXTENSION_NAME>' do
 +  use_react_native!
 +
-+  pod 'RNShareMenu', :path => '../node_modules/react-native-share-menu'
++  pod 'RNShareMenu', :path => '../node_modules/@keeex/react-native-share-menu'
 +  # Manually link packages here to keep your extension bundle size minimal
 +end
 ```
